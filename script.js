@@ -65,8 +65,11 @@ const gameBoard = (() => {
 })();
 
 const gameState = (() => {
+    let over = false;
     const playRound = (player, row, cell) => {
-        if(gameBoard.cells[row][cell] == "X" || gameBoard.cells[row][cell] == "O")
+        if(over == true)
+            alert("game is over");
+        else if(gameBoard.cells[row][cell] == "X" || gameBoard.cells[row][cell] == "O")
         alert("ALREADY PLAYED IN"); // ERROR MSG
         else{
             gameBoard.cells[row][cell] = player.symbol;
@@ -93,6 +96,8 @@ const gameState = (() => {
                 gameBoard.cells[i][j] = "";
             }
         }
+        const playerTurn = document.querySelector(".playerTurn");
+        playerTurn.textContent = `${playerOne.name}'s turn (X)`;
         gameBoard.display();
     }
     return {playRound, restart};

@@ -18,6 +18,20 @@
     flex-direction: column;
 }
 
+.restartButton{
+    margin-top : 50px;
+}
+
+button{
+    width: 200px;
+    height: 150px;
+    font-size: 25px;
+    background-color : rgb(153, 28, 28);
+    border : 2px solid black;
+    border-radius: 100%;
+}
+
+
 .row{
     display: flex;
     height: 10vh;
