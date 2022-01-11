@@ -2,12 +2,6 @@ const Player = (name, symbol) => {
     return {name, symbol};
 }
 
-playerOne = Player("Player 1", "X");
-playerTwo = Player("Player 2", "O");
-currentPlayer = playerOne;
-
-
-
 const gameBoard = (() => {
     let cells = [
         ["", "", ""],
@@ -17,6 +11,9 @@ const gameBoard = (() => {
 
     // function to display the game board
     const display = () =>{
+        const playerTurn = document.querySelector(".playerTurn");
+        if(playerTurn.textContent == "")
+            playerTurn.textContent = `${playerOne.name}'s turn (O)`;
         const board = document.querySelector(".board");
         board.innerHTML = "";
         for(let i = 0; i < 3; i++){
@@ -42,17 +39,17 @@ const gameBoard = (() => {
             right.onclick = function(event){
                 rowNumber = event.target.dataset.rowNum;
                 cell = event.target.dataset.cellNum;
-                playRound(currentPlayer, rowNumber, cell);
+                gameState.playRound(currentPlayer, rowNumber, cell);
             }
             middle.onclick = function(event){
                 rowNumber = event.target.dataset.rowNum;
                 cell = event.target.dataset.cellNum;
-                playRound(currentPlayer, rowNumber, cell);
+                gameState.playRound(currentPlayer, rowNumber, cell);
             }
             left.onclick = function(event){
                 rowNumber = event.target.dataset.rowNum;
                 cell = event.target.dataset.cellNum;
-                playRound(currentPlayer, rowNumber , cell);
+                gameState.playRound(currentPlayer, rowNumber , cell);
             }
             row.appendChild(left);
             row.appendChild(middle);
@@ -61,28 +58,42 @@ const gameBoard = (() => {
         }
     }
 
-    const playRound = (player, row, cell) => {
-        console.log(cell);
-        if(cells[row][cell] == "X" || cells[row][cell] == "O")
-        alert("ALREADY PLAYED IN"); // ERROR MSG
-        else{
-            cells[row][cell] = player.symbol;
-            display();
-            switchPlayer();
-        }
-    }
-    const switchPlayer = () => {
-        if(currentPlayer == playerOne)
-            currentPlayer = playerTwo;
-        else
-            currentPlayer = playerOne;
-    }
     return{
         cells,
         display,
     };
 })();
 
+const gameState = (() => {
+    const playRound = (player, row, cell) => {
+        if(gameBoard.cells[row][cell] == "X" || gameBoard.cells[row][cell] == "O")
+        alert("ALREADY PLAYED IN"); // ERROR MSG
+        else{
+            gameBoard.cells[row][cell] = player.symbol;
+            gameBoard.display();
+            switchPlayer();
+        }
+    }
+    const switchPlayer = () => {
+        const playerTurn = document.querySelector(".playerTurn");
+        if(currentPlayer == playerOne)
+        {
+            currentPlayer = playerTwo;
+            playerTurn.textContent = `${playerTwo.name}'s turn (O)`;
+        }
+        else
+        {
+            currentPlayer = playerOne;
+            playerTurn.textContent = `${playerOne.name}'s turn (X)`;
+        }
+    }
+    
+    return {playRound};
+})();
 
 
+
+playerOne = Player("Ahmed", "X");
+playerTwo = Player("Player 2", "O");
+currentPlayer = playerOne;
 gameBoard.display();
