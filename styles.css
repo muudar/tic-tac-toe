@@ -14,6 +14,7 @@
 .board{
     height: 33vh;
     width: 20%;
+    min-width: 200px;
     display: flex;
     flex-direction: column;
 }
