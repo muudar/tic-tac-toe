@@ -12,8 +12,7 @@ const gameBoard = (() => {
     // function to display the game board
     const display = () =>{
         const playerTurn = document.querySelector(".playerTurn");
-        if(playerTurn.textContent == "")
-            playerTurn.textContent = `${playerOne.name}'s turn (O)`;
+        playerTurn.textContent = `${currentPlayer.name}'s turn (${currentPlayer.symbol})`;
         const board = document.querySelector(".board");
         board.innerHTML = "";
         for(let i = 0; i < 3; i++){
@@ -58,54 +57,108 @@ const gameBoard = (() => {
         }
     }
 
+    const isFull = () => {
+        for(let i = 0; i < 3; i++){
+            for(let j = 0; j < 3; j++){
+                if(cells[i][j] != "X" && cells[i][j] != "O")
+                    return false;
+            }
+        }
+        return true;
+    }
     return{
         cells,
         display,
+        isFull
     };
 })();
 
 const gameState = (() => {
     let over = false;
     const playRound = (player, row, cell) => {
-        if(over == true)
-            alert("game is over");
-        else if(gameBoard.cells[row][cell] == "X" || gameBoard.cells[row][cell] == "O")
-        alert("ALREADY PLAYED IN"); // ERROR MSG
-        else{
-            gameBoard.cells[row][cell] = player.symbol;
-            gameBoard.display();
-            switchPlayer();
+        if(over == false){
+            if(!(gameBoard.cells[row][cell] == "X" || gameBoard.cells[row][cell] == "O"))
+            {
+                gameBoard.cells[row][cell] = player.symbol;
+                switchPlayer();
+                gameBoard.display();
+                checkWinState();
+            }
         }
+
     }
     const switchPlayer = () => {
         const playerTurn = document.querySelector(".playerTurn");
         if(currentPlayer == playerOne)
         {
             currentPlayer = playerTwo;
-            playerTurn.textContent = `${playerTwo.name}'s turn (O)`;
+            playerTurn.textContent = `${playerTwo.name}'s turn (${playerTwo.symbol})`;
         }
         else
         {
             currentPlayer = playerOne;
-            playerTurn.textContent = `${playerOne.name}'s turn (X)`;
+            playerTurn.textContent = `${playerOne.name}'s turn (${playerOne.symbol})`;
         }
     }
     const restart = () =>{
+        over = false;
         for(let i = 0; i < gameBoard.cells.length; i++){
             for(let j = 0; j < gameBoard.cells[i].length; j++){
                 gameBoard.cells[i][j] = "";
             }
         }
         const playerTurn = document.querySelector(".playerTurn");
-        playerTurn.textContent = `${playerOne.name}'s turn (X)`;
+        playerTurn.style.color = "black";
+        currentPlayer = playerOne;
         gameBoard.display();
+    }
+
+    const checkWinState = () => {
+        const playerTurn = document.querySelector(".playerTurn");
+        if(hasWon(playerOne)){
+            playerTurn.textContent = `${playerOne.name} has won the game!`;
+            playerTurn.style.color = "green";
+            over = true;
+        }
+        else if(hasWon(playerTwo)){
+            playerTurn.textContent = `${playerTwo.name} has won the game!`;
+            playerTurn.style.color = "green";
+            over = true;
+        }
+        else if(gameBoard.isFull()){
+            playerTurn.textContent = "Game has ended in a DRAW!";
+            playerTurn.style.color = "red";
+            over = true;
+        }
+    }
+
+    const hasWon = (player) =>{
+        /// Check horizontally
+        for(let i = 0; i < 3; i++){
+            if(gameBoard.cells[i][0] == gameBoard.cells[i][1] && gameBoard.cells[i][1] == gameBoard.cells[i][2] && gameBoard.cells[i][0] == player.symbol)
+                return true;
+        }
+
+        // Check veritcally 
+        for(let i = 0; i < 3; i++){
+            if(gameBoard.cells[0][i] == gameBoard.cells[1][i] && gameBoard.cells[1][i] == gameBoard.cells[2][i] && gameBoard.cells[0][i] == player.symbol){
+                return true;
+            }
+        }
+        
+        // Check diagonally
+        if(gameBoard.cells[0][0] == gameBoard.cells[1][1] &&  gameBoard.cells[1][1] == gameBoard.cells[2][2] && gameBoard.cells[1][1] == player.symbol)
+            return true;
+        if(gameBoard.cells[0][2] == gameBoard.cells[1][1] && gameBoard.cells[1][1] == gameBoard.cells[2][0] && gameBoard.cells[1][1] == player.symbol)
+            return true;
+        return false;
     }
     return {playRound, restart};
 })();
 
 
 
-playerOne = Player("Ahmed", "X");
+playerOne = Player("Player 1", "X");
 playerTwo = Player("Player 2", "O");
 currentPlayer = playerOne;
 gameBoard.display();
