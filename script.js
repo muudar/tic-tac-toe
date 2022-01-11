@@ -87,8 +87,15 @@ const gameState = (() => {
             playerTurn.textContent = `${playerOne.name}'s turn (X)`;
         }
     }
-    
-    return {playRound};
+    const restart = () =>{
+        for(let i = 0; i < gameBoard.cells.length; i++){
+            for(let j = 0; j < gameBoard.cells[i].length; j++){
+                gameBoard.cells[i][j] = "";
+            }
+        }
+        gameBoard.display();
+    }
+    return {playRound, restart};
 })();
 
 
